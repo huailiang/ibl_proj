@@ -50,8 +50,8 @@
                 float3 N = normalize(v.vertex);
     
                 // make the simplyfying assumption that V equals R equals the normal 
-                float3 R = N;
-                float3 V = R;
+                const float3 R = N;
+                const float3 V = R;
 
                 const uint SAMPLE_COUNT = 512u;
                 float3 prefilteredColor = float3(0,0,0);
@@ -61,17 +61,17 @@
                 {
                     // generates a sample vector that's biased towards the preferred alignment direction (importance sampling).
                     float2 xi = Hammersley(i, SAMPLE_COUNT);
-                    float3 H = ImportanceSampleGGX(xi, N, _roughness);
-                    float3 L  = normalize(2.0 * dot(V, H) * H - V);
+                    const float3 h = ImportanceSampleGGX(xi, N, _roughness);
+                    float3 L = normalize(2.0 * dot(V, h) * h - V);
 
                     const float NdotL = max(dot(N, L), 0.0);
                     if(NdotL > 0.0)
                     {
                         // sample from the environment's mip level based on roughness/pdf
-                        float D   = DistributionGGX(N, H, _roughness);
-                        float NdotH = max(dot(N, H), 0.0);
-                        float HdotV = max(dot(H, V), 0.0);
-                        float pdf = D * NdotH / (4.0 * HdotV) + 0.0001;
+                        const float D = DistributionGGX(N, h, _roughness);
+                        const float NdotH = max(dot(N, h), 0.0);
+                        const float HdotV = max(dot(h, V), 0.0);
+                        const float pdf = D * NdotH / (4.0 * HdotV) + 0.0001;
 
                         const float resolution = 512.0; // resolution of source cubemap (per face)
                         const float saTexel  = 4.0 * PI / (6.0 * resolution * resolution);
