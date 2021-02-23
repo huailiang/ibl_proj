@@ -1,4 +1,4 @@
-﻿Shader "Custom/PBR/BrdfLut"
+﻿Shader "PBR/BrdfLut"
 {
     SubShader
     {

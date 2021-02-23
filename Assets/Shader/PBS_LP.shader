@@ -1,4 +1,4 @@
-Shader "Custom/PBR/PBS_LP" {
+Shader "PBR/PBS_LP" {
     Properties {        
         _MainTex ("Base Color", 2D) = "white" {}
         _Color ("Color", Color) = (0.0,0.0,0.0,1)

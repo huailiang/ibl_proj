@@ -1,4 +1,4 @@
-﻿Shader "Custom/PBR/BrdfLut"
+﻿Shader "PBR/Prefilter"
 {
     Properties
     {
@@ -53,7 +53,7 @@
                 float3 R = N;
                 float3 V = R;
 
-                const uint SAMPLE_COUNT = 1024u;
+                const uint SAMPLE_COUNT = 512u;
                 float3 prefilteredColor = float3(0,0,0);
                 float totalWeight = 0.0;
                 

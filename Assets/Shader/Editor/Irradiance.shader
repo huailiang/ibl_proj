@@ -1,4 +1,4 @@
-﻿Shader "Custom/PBR/Irradiance"
+﻿Shader "PBR/Irradiance"
 {
     Properties
     {

@@ -1,4 +1,4 @@
-Shader "Custom/PBR/PBR_M4" {
+Shader "PBR/PBR_M4" {
     Properties {        
         _MainTex ("Base Color", 2D) = "white" {}
         _Color ("Color", Color) = (0.0,0.0,0.0,1)
