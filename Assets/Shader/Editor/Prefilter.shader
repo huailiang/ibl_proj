@@ -3,7 +3,7 @@
     Properties
     {
         _skybox("skybox",CUBE) = ""{}
-        _roughness("roughness",float)=0.4
+        _roughness("roughness",Range(0,1)) = 0.2
     }
     SubShader
     {
