@@ -64,7 +64,7 @@
                     float3 H = ImportanceSampleGGX(xi, N, _roughness);
                     float3 L  = normalize(2.0 * dot(V, H) * H - V);
 
-                    float NdotL = max(dot(N, L), 0.0);
+                    const float NdotL = max(dot(N, L), 0.0);
                     if(NdotL > 0.0)
                     {
                         // sample from the environment's mip level based on roughness/pdf
