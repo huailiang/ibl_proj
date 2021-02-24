@@ -108,7 +108,6 @@ Shader "PBR/PBS_LP2"
                 // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
                 float3 F0 = float3(0.04, 0.04, 0.04);
                 F0 = lerp(F0, albedo, metallic);
-
                 float3 Lo = float3(0, 0, 0);
 
                 // direct light
