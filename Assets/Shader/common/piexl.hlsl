@@ -18,7 +18,7 @@ float4 fragPBRForwardBase(VertexPBROutput i) : SV_Target
     float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
     float3 _NormalMap_var = UnpackNormal(tex2D(_NormalMap,TRANSFORM_TEX(i.uv0, _NormalMap)));
     float3 normalLocal = _NormalMap_var.rgb;
-    float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
+    float3 normalDirection = normalize(mul(normalLocal, tangentTransform )); // Perturbed normals
     float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
     float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
     float3 lightColor = _LightColor0.rgb;

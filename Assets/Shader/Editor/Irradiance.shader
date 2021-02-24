@@ -28,7 +28,7 @@
 
             struct v2f
             {
-                float4 vertex : TANGENT;
+                float4 vertex : TEXCOORD0;
                 float4 clipPos: POSITION;
             };
 

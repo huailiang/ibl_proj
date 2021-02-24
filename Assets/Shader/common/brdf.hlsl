@@ -1,6 +1,5 @@
 /**
 * brdf.hlsl
-* 间接光 预结算BRDF
 */
 
 #ifndef UNITY_BRDF
@@ -34,13 +33,12 @@ float RadicalInverse_VdC(uint bits)
     return float(bits) * 2.3283064365386963e-10; // / 0x100000000
 }
 
-// ----------------------------------------------------------------------------
 float2 Hammersley(uint i, uint N)
 {
     return float2(float(i) / float(N), RadicalInverse_VdC(i));
 }
 
-// ----------------------------------------------------------------------------
+
 float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
 {
     const float a = roughness * roughness;
@@ -76,13 +74,36 @@ float GeometrySchlickGGX(float NdotV, float roughness)
     return nom / denom;
 }
 
-// ----------------------------------------------------------------------------
+float GeometrySchlickGGX2(float NdotV, float roughness)
+{
+    // note that we use a different k for direct Light
+    const float r = (roughness + 1.0);
+    const float k = (r * r) / 8.0;
+
+    const float nom = NdotV;
+    const float denom = NdotV * (1.0 - k) + k;
+
+    return nom / denom;
+}
+
 float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
 {
+    // IBL GeometrySmith
     const float NdotV = max(dot(N, V), 0.0);
     const float NdotL = max(dot(N, L), 0.0);
     const float ggx2 = GeometrySchlickGGX(NdotV, roughness);
     const float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+
+    return ggx1 * ggx2;
+}
+
+float GeometrySmith2(float3 N, float3 V, float3 L, float roughness)
+{
+    // Direct Light GeometrySmith
+    const float NdotV = max(dot(N, V), 0.0);
+    const float NdotL = max(dot(N, L), 0.0);
+    const float ggx2 = GeometrySchlickGGX2(NdotV, roughness);
+    const float ggx1 = GeometrySchlickGGX2(NdotL, roughness);
 
     return ggx1 * ggx2;
 }
