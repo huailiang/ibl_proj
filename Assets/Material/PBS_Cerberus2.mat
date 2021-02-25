@@ -44,7 +44,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IrradianceMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8900000, guid: 4b7f1d66c71f648c6927167a9436c898, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -72,7 +72,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PrefilterMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8900000, guid: 29c6d53838130f343842ea85ee151664, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Roughness:
@@ -80,7 +80,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _brdfLut:
-        m_Texture: {fileID: 8400000, guid: 3725fa8ad978344d9b91d9801c2e08b2, type: 2}
+        m_Texture: {fileID: 2800000, guid: 214a7f867055f9d418fae47c711242e8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:

@@ -96,16 +96,14 @@ Shader "PBR/PBS_LP2"
             float3 BRDFOutout(v2f i)
             {
                 const float3 N = normalize(i.normal);
-                const float3 V = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
+				const float3 V = normalize(_WorldSpaceCameraPos.xyz);// -i.posWorld.xyz);
                 const float3 R = reflect(-V, N);
 
                 const float3 metallic = tex2D(_Metal, i.uv0);
                 const float3 albedo = tex2D(_MainTex, i.uv0);
                 float roughness = tex2D(_Roughness, i.uv0).x;
                 const float ao = tex2D(_AO, i.uv0).x;
-
-                // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
-                // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
+ 
                 float3 F0 = float3(0.04, 0.04, 0.04);
                 F0 = lerp(F0, albedo, metallic);
                 float3 Lo = float3(0, 0, 0);
@@ -124,21 +122,14 @@ Shader "PBR/PBS_LP2"
 
                 const float3 nominator = NDF * G * F;
                 const float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
-                // 0.001 to prevent divide by zero.
                 float3 specular = nominator / denominator;
 
-                // kS is equal to Fresnel
                 float3 kS = F;
-                // for energy conservation, the diffuse and specular light can't
-                // be above 1.0 (unless the surface emits light); to preserve this
-                // relationship the diffuse component (kD) should equal 1.0 - kS.
                 float3 kD = float3(1, 1, 1) - kS;
-                // multiply kD by the inverse metalness such that only non-metals 
-                // have diffuse lighting, or a linear blend if partly metal (pure metals
-                // have no diffuse light).
                 kD *= 1.0 - metallic;
                 const float NdotL = max(dot(N, L), 0.0);
                 Lo = (kD * albedo / PI + specular) * radiance * NdotL;
+
                 // ambient lighting (we now use IBL as the ambient term)
                 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
                 kS = F;
@@ -148,13 +139,15 @@ Shader "PBR/PBS_LP2"
                 const float3 irradiance = texCUBE(_IrradianceMap, N).rgb;
                 const float3 diffuse = irradiance * albedo;
 
-                const float max_reflect_lod = 4.0;
-                const float3 prefilteredColor = texCUBElod(_PrefilterMap, float4(R, roughness * max_reflect_lod)).rgb;
+                // const float max_reflect_lod = 4.0;
+                // const float3 prefilteredColor = texCUBElod(_PrefilterMap, float4(R, roughness * max_reflect_lod)).rgb;
+				const float3 prefilteredColor = texCUBE(_PrefilterMap, R).rgb;
+
                 float NdotV = max(dot(N, V), 0);
                 const float2 brdf = tex2D(_brdfLut, float2(NdotV, roughness)).rg;
                 specular = prefilteredColor * (F * brdf.x + brdf.y);
                 const float3 ambient = (kD * diffuse + specular) * ao;
-                float3 color = ambient + Lo;
+				float3 color = ambient + Lo;
                 // HDR tonemapping
                 color = color / (color + float3(1, 1, 1));
                 // gamma correct

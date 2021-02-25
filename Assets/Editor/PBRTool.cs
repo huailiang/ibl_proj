@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System.IO;
 
 namespace Editor
 {
@@ -30,6 +31,38 @@ namespace Editor
             EditorUtility.SetDirty(obj);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+        
+        [MenuItem("Tools/ExportCameraRT")]
+        static void ExportSelectRT()
+        {
+            var rt = Camera.main.targetTexture;
+            if (rt != null)
+            {
+                string folder = string.Empty;
+                folder = EditorUtility.OpenFolderPanel("select output", folder, "Assets");
+                RT2Png(folder, "lut", rt);
+                AssetDatabase.Refresh();
+            }
+            else
+                EditorUtility.DisplayDialog("tip", "select is not RT", "ok");
+        }
+
+        public static void RT2Png(string dir, string pngName, RenderTexture rt)
+        {
+            RenderTexture prev = RenderTexture.active;
+            RenderTexture.active = rt;
+            Texture2D png = new Texture2D(rt.width, rt.height, TextureFormat.ARGB32, false);
+            png.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+            byte[] bytes = png.EncodeToPNG();
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+            FileStream file = File.Open(dir + "/" + pngName + ".png", FileMode.Create);
+            BinaryWriter writer = new BinaryWriter(file);
+            writer.Write(bytes);
+            file.Close();
+            Texture.DestroyImmediate(png);
+            RenderTexture.active = prev;
         }
 
     }
