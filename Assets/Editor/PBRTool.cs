@@ -52,7 +52,7 @@ namespace Editor
         {
             RenderTexture prev = RenderTexture.active;
             RenderTexture.active = rt;
-            Texture2D png = new Texture2D(rt.width, rt.height, TextureFormat.ARGB32, false);
+            Texture2D png = new Texture2D(rt.width, rt.height, TextureFormat.RG16, false);
             png.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
             byte[] bytes = png.EncodeToPNG();
             if (!Directory.Exists(dir))
