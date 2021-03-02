@@ -72,7 +72,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PrefilterMap:
-        m_Texture: {fileID: 8900000, guid: 947f40640e52969489e726eb6d39ed26, type: 2}
+        m_Texture: {fileID: 8900000, guid: d1b6736632dff494aaa0fa96240b7d4a, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Roughness:

@@ -163,7 +163,7 @@ Shader "PBR/PBS_LP2"
                 // HDR tonemapping
                 color = color / (color + float3(1, 1, 1));
                 // gamma correct
-               // color = pow(color, float3(0.44, 0.44, 0.44)); // 0.45 = 1.0/2.2
+                // color = pow(color, float3(0.44, 0.44, 0.44)); // 0.45 = 1.0/2.2
                 return color;
             }
 
