@@ -33,6 +33,7 @@ Unity 默认的 GI 生成的 PBR 效果 和 教程中的公式求得效果对比
 
 <br><img src='.github/ibl4.jpg' width=1150><br>
 
+上图中， 上面的枪使用的Unity默认的GI管线得到的， 下面的枪使用的LearnOpenGL的方法渲染得到的结果。
 
 
 ## 参考
