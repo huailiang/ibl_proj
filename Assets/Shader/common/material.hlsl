@@ -21,13 +21,16 @@ uniform float4 _NormalMap_ST;
 
 #ifdef USE_PBR_MAP
 uniform sampler2D _Metal;
+uniform float4 _Metal_ST;
 uniform sampler2D _Roughness;
+uniform float4 _Roughness_ST;
 #else
 uniform float4 _Properties;
 #endif
 
 #ifdef USE_AO_MAP
 uniform sampler2D _AO;
+uniform float4 _AO_ST;
 #endif
 
 #if USE_SPECIAL_RIM_COLOR
