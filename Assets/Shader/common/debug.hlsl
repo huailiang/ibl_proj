@@ -33,7 +33,7 @@ struct DebugData
 
 uniform float _DebugMode;
 
-float4 DebugOutputColor(DebugData debugData) 
+float4 DebugOutputColor(DebugData debugData)
 {
     float3 diffuse = debugData.diffuse;
     float3 specular = debugData.specular;
@@ -48,15 +48,15 @@ float4 DebugOutputColor(DebugData debugData)
     [branch]
     if (_DebugMode < Debug_None)
     {
-        return float4(diffuse+specular+rim,a);
+        return float4(diffuse + specular + rim, a);
     }
     else if (_DebugMode < Debug_Diffuse)
     {
-        return float4(diffuse,a);
+        return float4(diffuse, a);
     }
     else if (_DebugMode < Debug_Specular)
     {
-        return float4(specular,a);
+        return float4(specular, a);
     }
     else if (_DebugMode < Debug_GGX)
     {
@@ -64,38 +64,38 @@ float4 DebugOutputColor(DebugData debugData)
     }
     else if (_DebugMode < Debug_SmithJoint)
     {
-        return float4(smith,smith,smith,1);
+        return float4(smith, smith, smith, 1);
     }
     else if (_DebugMode < Debug_Frenel)
     {
-        return float4(frenel,1);
+        return float4(frenel, 1);
     }
     else if (_DebugMode < Debug_Normal)
     {
-        return float4(normal,a);
+        return float4(normal, a);
     }
     else if (_DebugMode < Debug_Rim)
     {
-        return float4(rim,a);
+        return float4(rim, a);
     }
     else if (_DebugMode < Debug_HitEffect)
     {
-        float3 lighting = float3(0,0,0);
-        float4 color = float4(diffuse+specular+rim,a);
+        float3 lighting = float3(0, 0, 0);
+        float4 color = float4(diffuse + specular + rim, a);
         [branch]
-        if (debug.a<0.4)
+        if (debug.a < 0.4)
         {
             return color *= debug.rgba;
         }
-        else if(debug.a<0.8)
+        else if (debug.a < 0.8)
         {
-            float ndotv= debugData.ndotv;
-            float rim = pow(saturate(1-ndotv),2)*20;
+            float ndotv = debugData.ndotv;
+            float rim = pow(saturate(1 - ndotv), 2) * 20;
             return color += debug.rgba * rim;
         }
         return color;
     }
-    return float4(1,1,1,1);
+    return float4(1, 1, 1, 1);
 }
 
 #endif //UNITY_DEBUG

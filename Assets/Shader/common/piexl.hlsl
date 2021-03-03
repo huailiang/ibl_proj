@@ -134,12 +134,12 @@ float4 fragPBRForwardBase(VertexPBROutput i) : SV_Target
         surfaceReduction = 1.0/(roughness*roughness + 1.0);
     #endif
     specularPBL *= any(specularColor) ? 1.0 : 0.0;
-    float3 directSpecular = attenColor*specularPBL*FresnelTerm(specularColor, LdotH);
+    float3 directSpecular = attenColor * specularPBL * FresnelTerm(specularColor, LdotH);
     half grazingTerm = saturate( gloss + specularMonochrome );
-    float3 indirectSpecular = (gi.indirect.specular);
+    float3 indirectSpecular = gi.indirect.specular;
     indirectSpecular *= FresnelLerp (specularColor, grazingTerm, NdotV);
     indirectSpecular *= surfaceReduction;
-    float3 specular = (directSpecular + indirectSpecular);
+    float3 specular = (directSpecular  + indirectSpecular);
 /////// Diffuse:
     NdotL = max(0.0,dot(normalDirection, lightDirection));
     half fd90 = 0.5 + 2 * LdotH * LdotH * (1-gloss);
@@ -150,7 +150,6 @@ float4 fragPBRForwardBase(VertexPBROutput i) : SV_Target
     indirectDiffuse += gi.indirect.diffuse;
     float3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor;
 
-    
 /// Rim Color
     #if USE_PBR_MAP
     float rimIntensity = 1;
@@ -174,10 +173,8 @@ float4 fragPBRForwardBase(VertexPBROutput i) : SV_Target
     finalColor= ao * finalColor;
     #endif
     
-    
     float4 finalRGBA = float4(finalColor,1);
 ///Alpha
-    // float alpha = 1;
     #if ALPHA_TEST
     finalRGBA = float4(finalColor, alpha);
     clip(finalRGBA.a-0.6);

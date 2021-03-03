@@ -3,6 +3,8 @@
 
 这里实现的方式基于 [LearnOpenGL][i1]的公式，主要是将 OpenGL(GLSL) 的实现方式转换成 unity 支持的 Shader。
 
+ <br><img src='.github/forum.jpg' width=1000><br>
+
 ### Scenes:
 
 __1. Example_Filter__

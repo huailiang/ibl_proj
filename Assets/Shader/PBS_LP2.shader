@@ -78,6 +78,7 @@ Shader "PBR/PBS_LP2"
 
             uniform samplerCUBE _IrradianceMap;
             uniform samplerCUBE _PrefilterMap;
+            uniform samplerCUBE _PrefilterMap2;
             uniform sampler2D _brdfLut;
 
             struct appdata
@@ -95,26 +96,23 @@ Shader "PBR/PBS_LP2"
                 float2 uv0 : TEXCOORD0;
                 float4 posWorld : TEXCOORD1;
                 
-                half3 tspace0 : TEXCOORD2; // tangent.x, bitangent.x, normal.x
-                half3 tspace1 : TEXCOORD3; // tangent.y, bitangent.y, normal.y
-                half3 tspace2 : TEXCOORD4; 
+                half3 normalDir : TEXCOORD2; 
+                half3 tangentDir : TEXCOORD3; 
+                half3 bitangentDir : TEXCOORD4; 
                 float3 normal : NORMAL;
             };
 
             float3 BRDFOutout(v2f i)
             {
-                //const float3 N = normalize(i.normal);
                 const float3 tanNormal = UnpackNormal(tex2D(_NormalMap, TRANSFORM_TEX(i.uv0,_NormalMap)));
-                half3 worldNorlmal;
-                worldNorlmal.x = dot(i.tspace0, tanNormal);
-                worldNorlmal.y = dot(i.tspace1, tanNormal);
-                worldNorlmal.z = dot(i.tspace2, tanNormal);
-               
+                float3x3 tangentTransform = float3x3(i.tangentDir, i.bitangentDir, i.normalDir);
+                half3 worldNorlmal  = normalize(mul(tanNormal, tangentTransform));
+
 				const float3 V = normalize(_WorldSpaceCameraPos.xyz -i.posWorld.xyz);
                 const float3 R = reflect(-V, worldNorlmal);
-                const float3 metallic = tex2D(_Metal,  TRANSFORM_TEX(i.uv0, _Metal));
+                const float3 metallic = tex2D(_Metal,  i.uv0);
                 const float3 albedo = tex2D(_MainTex, TRANSFORM_TEX(i.uv0, _MainTex));
-                float roughness = tex2D(_Roughness,  TRANSFORM_TEX( i.uv0, _Roughness)).x;
+                float roughness = tex2D(_Roughness,  i.uv0).x;
                 const float ao = tex2D(_AO, TRANSFORM_TEX(i.uv0, _AO)).x;
  
                 float3 F0 = float3(0.04, 0.04, 0.04);
@@ -140,7 +138,7 @@ Shader "PBR/PBS_LP2"
                 float3 kD = float3(1, 1, 1) - kS;
                 kD *= 1.0 - metallic;
                 const float NdotL = max(dot(worldNorlmal, L), 0.0);
-               float3 Lo = (kD * albedo / PI + specular) * radiance * NdotL;
+               float3 directColor = (kD * albedo / PI + specular) * radiance * NdotL;
 
                 // ambient lighting (we now use IBL as the ambient term)
                 F = fresnelSchlickRoughness(max(dot(worldNorlmal, V), 0.0), F0, roughness);
@@ -152,14 +150,14 @@ Shader "PBR/PBS_LP2"
                 const float3 diffuse = irradiance * albedo;
 
                 // const float max_reflect_lod = 4.0;
-                // const float3 prefilteredColor = texCUBElod(_PrefilterMap, float4(R, roughness * max_reflect_lod)).rgb;
+                 // const float3 prefilteredColor = texCUBElod(_PrefilterMap, float4(R, roughness * max_reflect_lod)).rgb;
 				const float3 prefilteredColor = texCUBE(_PrefilterMap, R).rgb;
 
                 float NdotV = max(dot(worldNorlmal, V), 0);
                 const float2 brdf = tex2D(_brdfLut, float2(NdotV, roughness)).rg;
                 specular = prefilteredColor * (F * brdf.x + brdf.y);
-                const float3 ambient = (kD * diffuse + specular) * ao;
-				float3 color = ambient + Lo;
+                const float3 indirectColor = (kD * diffuse + specular) * ao;
+				float3 color = indirectColor + directColor;
                 // HDR tonemapping
                 color = color / (color + float3(1, 1, 1));
                 // gamma correct
@@ -175,16 +173,9 @@ Shader "PBR/PBS_LP2"
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.uv0 = v.texcoord0;
 
-                half3 wNormal = UnityObjectToWorldNormal(v.normal);
-                half3 wTangent = UnityObjectToWorldDir(v.tangent.xyz);
-                half tangentSign = v.tangent.w * unity_WorldTransformParams.w;
-                 half3 wBitangent = cross(wNormal, wTangent) * tangentSign;
-                // output the tangent space matrix
-                //转置矩阵！
-                o.tspace0 = half3(wTangent.x, wBitangent.x, wNormal.x);
-                o.tspace1 = half3(wTangent.y, wBitangent.y, wNormal.y);
-                o.tspace2 = half3(wTangent.z, wBitangent.z, wNormal.z);
-
+                o.normalDir = UnityObjectToWorldNormal(v.normal);
+                o.tangentDir = normalize(mul(unity_ObjectToWorld, float4( v.tangent.xyz, 0.0)).xyz);
+                o.bitangentDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
                 return o;
             }
 
