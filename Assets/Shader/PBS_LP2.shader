@@ -105,8 +105,8 @@ Shader "PBR/PBS_LP2"
             float3 BRDFOutout(v2f i)
             {
                 const float3 tanNormal = UnpackNormal(tex2D(_NormalMap, TRANSFORM_TEX(i.uv0,_NormalMap)));
-                float3x3 tangentTransform = float3x3(i.tangentDir, i.bitangentDir, i.normalDir);
-                half3 worldNorlmal  = normalize(mul(tanNormal, tangentTransform));
+                const float3x3 tangentTransform = float3x3(i.tangentDir, i.bitangentDir, i.normalDir);
+                const half3 worldNorlmal  = normalize(mul(tanNormal, tangentTransform));
 
 				const float3 V = normalize(_WorldSpaceCameraPos.xyz -i.posWorld.xyz);
                 const float3 R = reflect(-V, worldNorlmal);
