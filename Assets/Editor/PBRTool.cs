@@ -6,7 +6,13 @@ namespace Editor
 {
     public class PBRTool
     {
-
+        [MenuItem("Tools/Github")]
+        static void Go2Github()
+        {
+            Application.OpenURL("https://github.com/huailiang/ibl_proj");
+        }
+        
+        
         [MenuItem("Tools/ExportMesh")]
         static void ExportMesh()
         {
