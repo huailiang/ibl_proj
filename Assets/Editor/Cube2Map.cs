@@ -32,7 +32,7 @@ namespace Editor
             cube = (GameObject)EditorGUILayout.ObjectField("Cubemap", cube, typeof(GameObject), true);
             EditorGUILayout.ObjectField("Camera", tmpCam, typeof(Camera), true);
 
-            EditorGUILayout.Space(8);
+            EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Select Output"))
             {
